@@ -73,3 +73,10 @@ class Post(models.Model):
     
     class Meta:
         ordering = ['-created_time']
+
+    # 新增 views 字段记录阅读量
+    views = models.PositiveIntegerField(default=0)
+    # 增加访问计数方法
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
