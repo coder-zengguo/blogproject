@@ -197,11 +197,11 @@ class ArchivesView(ListView):
     model = Post
     template_name = 'blog/index.html'
     context_object_name = 'post_list'
-    
+
     def get_queryset(self):
-        year = self.Kwargs.get('year')
-        month = self.Kwargs.get('month')
-        return super(ArchivesView, self).get_queryset().filter(created_time__year=year,created_time__month=month)
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        return super(ArchivesView, self).get_queryset().filter(created_time__year=year, created_time__month=month)
 
 class PostDetailView(DetailView):
     # 这些属性的含义和 ListView 是一样的
