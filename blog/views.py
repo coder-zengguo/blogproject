@@ -18,7 +18,7 @@ def detail(request, pk):
     # 阅读量 +1
     post.increase_views()
     # Markdown 渲染
-    post.body = markdown.markdown(post.body,
+    post.body = markdown.Markdown(post.body,
                                 extensions=[
                                     'markdown.extensions.extra',
                                     'markdown.extensions.codehilite',
@@ -227,7 +227,7 @@ class PostDetailView(DetailView):
         # 覆写 get_object 方法的目的是因为需要对 post 的 body 进行渲染
         post = super(PostDetailView, self).get_object(queryset=None)
         # Markdown 渲染
-        post.body = markdown.markdown(post.body,
+        post.body = markdown.Markdown(post.body,
                                       extensions=[
                                           'markdown.extensions.extra',
                                           'markdown.extensions.codehilite',
