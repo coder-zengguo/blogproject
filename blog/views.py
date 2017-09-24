@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from .models import Post, Category, Tag
 from comments.forms import CommentForm
 from django.views.generic import ListView,DetailView
+from django.utils.text import slugify
+from markdown.extensions.toc import TocExtension
 
 # Create your views here.
 def index(request):
@@ -227,12 +229,16 @@ class PostDetailView(DetailView):
         # 覆写 get_object 方法的目的是因为需要对 post 的 body 进行渲染
         post = super(PostDetailView, self).get_object(queryset=None)
         # Markdown 渲染
-        post.body = markdown.Markdown(post.body,
-                                      extensions=[
-                                          'markdown.extensions.extra',
-                                          'markdown.extensions.codehilite',
-                                          'markdown.extensions.toc',
+        md = markdown.Markdown(extensions=[
+                                        'markdown.extensions.extra',
+                                        'markdown.extensions.codehilite',
+                                        'markdown.extensions.toc',
+                                        # 记得在顶部引入 TocExtension 和 slugify
+                                        TocExtension(slugify=slugify),
                                       ])
+        post.body = md.convert(post.body)
+        post.toc = md.toc
+        
         return post
     
     def get_context_data(self, **kwargs):
