@@ -57,8 +57,8 @@ class CategoryView(ListView):
     context_object_name = 'post_list'
     
     def get_queryset(self):
-        cate = get_object_or_404(Category, pk=self.kwargs.grt('pk'))
-        return super(CategoryView,self).get_queryset().filter(category=cate)
+        cate = get_object_or_404(Category, pk=self.kwargs.get('pk'))
+        return super(CategoryView, self).get_queryset().filter(category=cate)
 
 class ArchivesView(ListView):
     model = Post
@@ -74,25 +74,25 @@ class PostDetailView(DetailView):
     # 这些属性的含义和 ListView 是一样的
     model = Post
     template_name = 'blog/detail.html'
-    context_object_name = 'post_list'
+    context_object_name = 'post'
     
     def get(self, request, *args, **kwargs):
         # 覆写 get 方法的目的是因为每当文章被访问一次，就得将文章阅读量 +1
         # get 方法返回的是一个 HttpResponse 实例
         # 之所以需要先调用父类的 get 方法，是因为只有当 get 方法被调用后，
         # 才有 self.object 属性，其值为 Post 模型实例，即被访问的文章 post
-        respose = super(PostDetailView, self).get(request, *args, **kwargs)
+        response = super(PostDetailView, self).get(request, *args, **kwargs)
         
         # 将文章阅读量 +1
         # 注意 self.object 的值就是被访问的文章 post
         self.object.increase_views()
         
-        # 视图必须返回一个 HtppResponse 对象
-        return respose
+        # 视图必须返回一个 HttpResponse 对象
+        return response
     
     def get_object(self, queryset=None):
         # 覆写 get_object 方法的目的是因为需要对 post 的 body 进行渲染
-        post = super(PostDetailView, self).get_object(queryset=Nodne)
+        post = super(PostDetailView, self).get_object(queryset=None)
         # Markdown 渲染
         post.body = markdown.markdown(post.body,
                                       extensions=[
